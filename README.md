@@ -1,4 +1,4 @@
-**Flashcards app **
+**Flashcards app**
 
 **What web app would it be?**
 
@@ -20,6 +20,7 @@ The project is for any student who is looking for an effective way to study. Mai
 it's useful as help to study languages, definitions, dates etc.
 
 **What needs will it satisfy?**
+
 It is more exciting than the classic way to study. It helps to memorize things for 
 a longer period. Students can control progress, notice and improve weaknesses. 
 Users can mark their flashcards as public so others can collaborate to prepare notes 
