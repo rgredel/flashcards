@@ -13,7 +13,7 @@ public class ConnectionPool {
         //Read properties from file
 
         static {
-            ds.setUrl("jdbc:postgresql://localhost/hplussport");
+            ds.setUrl("jdbc:postgresql://localhost/flashcard");
             ds.setUsername("postgres");
             ds.setPassword("root");
             ds.setMinIdle(5);
