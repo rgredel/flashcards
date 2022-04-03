@@ -1,4 +1,4 @@
-package pl.gredel.flashcards.db;
+package pl.gredel.flashcards.db.conf;
 
 
 import org.apache.commons.dbcp2.BasicDataSource;

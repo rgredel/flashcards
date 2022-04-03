@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.Collectors;
 
-public class DatabaseInizializer {
+public class DatabaseInitializer {
 
     private String getStatement(){
         BufferedReader reader = null;

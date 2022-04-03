@@ -1,6 +1,6 @@
-package com.frankmoley.lil.jdbc.util;
+package pl.gredel.flashcards.db.dao.util;
 
 public interface DataTransferObject {
 
-    long getId();
+    int getId();
 }
