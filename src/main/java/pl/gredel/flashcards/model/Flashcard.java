@@ -10,8 +10,21 @@ public class Flashcard implements DataTransferObject {
     private int level;
     private boolean isPublic;
     Users user;
+    Category category;
 
-    public Flashcard(int id, String title, String question, String answer, int level, boolean isPublic, Users user) {
+    public Flashcard() {
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Flashcard(int id, String title, String question, String answer,
+                     int level, boolean isPublic, Users user, Category category) {
         this.id = id;
         this.title = title;
         this.question = question;
@@ -19,6 +32,7 @@ public class Flashcard implements DataTransferObject {
         this.level = level;
         this.isPublic = isPublic;
         this.user = user;
+        this.category = category;
     }
 
     @Override

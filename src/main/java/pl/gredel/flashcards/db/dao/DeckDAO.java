@@ -41,7 +41,8 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             sqlException.printStackTrace();
             throw new RuntimeException(sqlException);
         }
-        return deck;    }
+        return deck;
+    }
 
     @Override
     public List<Deck> findAll() {
@@ -64,7 +65,8 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             sqlException.printStackTrace();
             throw new RuntimeException(sqlException);
         }
-        return decks;    }
+        return decks;
+    }
 
     @Override
     public Deck update(Deck dto) {
