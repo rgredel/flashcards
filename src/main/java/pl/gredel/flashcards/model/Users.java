@@ -12,6 +12,18 @@ public class Users implements DataTransferObject{
     List<Flashcard> flashcards;
     List<Deck> decks;
 
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", flashcards=" + flashcards +
+                ", decks=" + decks +
+                '}';
+    }
+
     public Users() {
 
     }

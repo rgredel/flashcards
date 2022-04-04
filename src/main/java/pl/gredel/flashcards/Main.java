@@ -2,7 +2,12 @@ package pl.gredel.flashcards;
 
 import pl.gredel.flashcards.db.conf.ConnectionPool;
 import pl.gredel.flashcards.db.dao.CategoryDAO;
+import pl.gredel.flashcards.db.dao.DeckDAO;
+import pl.gredel.flashcards.db.dao.FlashcardDAO;
+import pl.gredel.flashcards.db.dao.UsersDAO;
 import pl.gredel.flashcards.model.Category;
+import pl.gredel.flashcards.model.Deck;
+import pl.gredel.flashcards.model.Flashcard;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,6 +52,21 @@ public class Main {
 
         categories = categoryDAO.findAll();
         categories.forEach(System.out::println);
+
+        UsersDAO usersDAO = new UsersDAO();
+
+        FlashcardDAO flashcardDAO = new FlashcardDAO();
+        Flashcard flashcard = new Flashcard("IT","What is CPU?","Processor",0,false,usersDAO.findById(1),categoryDAO.findById(1));
+        flashcardDAO.create(flashcard);
+
+        List<Flashcard> allPublic = flashcardDAO.findAllByUserId(1);
+        allPublic.forEach(System.out::println);
+
+        DeckDAO deckDAO = new DeckDAO();
+        Deck deck = deckDAO.findById(1);
+        deck.setFlashcards(flashcardDAO.findAllByDeckId(deck.getId()));
+        System.out.println(deck);
     }
+
 
 }

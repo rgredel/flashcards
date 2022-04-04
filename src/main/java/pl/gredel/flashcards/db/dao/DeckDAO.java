@@ -1,12 +1,9 @@
 package pl.gredel.flashcards.db.dao;
 
 import pl.gredel.flashcards.db.dao.util.DataAccessObject;
-import pl.gredel.flashcards.db.dao.util.DataTransferObject;
-import pl.gredel.flashcards.model.Category;
 import pl.gredel.flashcards.model.Deck;
 import pl.gredel.flashcards.model.Users;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,9 +29,8 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             while (resultSet.next()){
                 deck.setId(resultSet.getInt(1));
                 deck.setName(resultSet.getString(2));
-               // UsersDAO usersDAO = new UsersDAO();
-               // Users user = usersDAO.findById(resultSet.getInt(3));
-                Users user = new Users();
+                UsersDAO usersDAO = new UsersDAO();
+                Users user = usersDAO.findById(resultSet.getInt(3));
                 deck.setUser(user);
             }
         } catch (SQLException sqlException) {
@@ -55,9 +51,8 @@ public class DeckDAO  extends DataAccessObject<Deck> {
                 Deck deck = new Deck();
                 deck.setId(resultSet.getInt(1));
                 deck.setName(resultSet.getString(2));
-                // UsersDAO usersDAO = new UsersDAO();
-                // Users user = usersDAO.findById(resultSet.getInt(3));
-                Users user = new Users();
+                UsersDAO usersDAO = new UsersDAO();
+                Users user = usersDAO.findById(resultSet.getInt(3));
                 deck.setUser(user);
                 decks.add(deck);
             }

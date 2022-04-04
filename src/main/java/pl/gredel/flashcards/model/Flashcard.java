@@ -12,6 +12,31 @@ public class Flashcard implements DataTransferObject {
     Users user;
     Category category;
 
+
+    public Flashcard(String title, String question, String answer, int level, boolean isPublic, Users user, Category category) {
+        this.title = title;
+        this.question = question;
+        this.answer = answer;
+        this.level = level;
+        this.isPublic = isPublic;
+        this.user = user;
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Flashcard{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                ", level=" + level +
+                ", isPublic=" + isPublic +
+                ", user=" + user +
+                ", category=" + category +
+                '}';
+    }
+
     public Flashcard() {
     }
 

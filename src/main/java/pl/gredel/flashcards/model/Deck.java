@@ -8,6 +8,17 @@ public class Deck implements DataTransferObject {
     private int id;
     private String name;
     Users user;
+
+    @Override
+    public String toString() {
+        return "Deck{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", user=" + user +
+                ", flashcards=" + flashcards +
+                '}';
+    }
+
     List<Flashcard> flashcards;
 
     public Deck(int id, String name, Users user, List<Flashcard> flashcards) {
