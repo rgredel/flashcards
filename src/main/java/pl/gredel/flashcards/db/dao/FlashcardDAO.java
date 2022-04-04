@@ -18,7 +18,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
     private static final String DELETE = "DELETE FROM Flashcard WHERE id=?";
     private static final String FIND_ALL_PUBLIC = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard WHERE is_public='t'";
     private static final String FIND_ALL_BY_USER = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard WHERE user_id=?";
-    private static final String FIND_ALL_BY_DECK = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard join deck_flashcard on id = flashcard_id WHERE user_id=?";
+    private static final String FIND_ALL_BY_DECK = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard join deck_flashcard on id = flashcard_id WHERE deck_flashcard.deck_id=?";
 
 
     @Override

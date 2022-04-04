@@ -13,11 +13,14 @@ import java.util.List;
 public class DeckDAO  extends DataAccessObject<Deck> {
 
     private static final String INSERT = "INSERT INTO Deck(name, user_id) VALUES (?, ?)";
+
     private static final String FIND_BY_ID = "SELECT id, name, user_id FROM Deck WHERE id=?";
     private static final String FIND_ALL = "SELECT id, name, user_id FROM Deck";
     private static final String LAST_ID = "SELECT max(ID) FROM Deck";
     private static final String UPDATE = "UPDATE Deck SET name =? , user_id =? WHERE id=?";
     private static final String DELETE = "DELETE FROM Deck WHERE id=?";
+    private static final String ADD_FLASHCARD_TO_DECK = "INSERT INTO deck_flashcard( deck_id , flashcard_id) VALUES (?, ?)";
+    private static final String DELETE_FLASHCARD_FROM_DECK = "DELETE FROM deck_flashcard WHERE deck_id=? AND flashcard_id=?";
 
     @Override
     public Deck findById(int id) {
@@ -108,6 +111,28 @@ public class DeckDAO  extends DataAccessObject<Deck> {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException(sqlException);
+        }
+    }
+    public void addFlashcardToDeck(int idFlashcard, int idDeck){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_FLASHCARD_TO_DECK);
+            preparedStatement.setInt(1,idDeck);
+            preparedStatement.setInt(2,idFlashcard);
+            preparedStatement.execute();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException(sqlException);
+        }
+    }
+    public void deleteFlashcardFromDeck(int idFlashcard, int idDeck){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLASHCARD_FROM_DECK);
+            preparedStatement.setInt(1, idDeck);
+            preparedStatement.setInt(2, idFlashcard);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();

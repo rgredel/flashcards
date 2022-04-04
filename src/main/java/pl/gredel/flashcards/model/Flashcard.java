@@ -32,8 +32,8 @@ public class Flashcard implements DataTransferObject {
                 ", answer='" + answer + '\'' +
                 ", level=" + level +
                 ", isPublic=" + isPublic +
-                ", user=" + user +
-                ", category=" + category +
+                ", user=" + user.getLogin() +
+                ", category=" + category.getName() +
                 '}';
     }
 

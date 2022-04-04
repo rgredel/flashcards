@@ -62,10 +62,20 @@ public class Main {
         List<Flashcard> allPublic = flashcardDAO.findAllByUserId(1);
         allPublic.forEach(System.out::println);
 
+
         DeckDAO deckDAO = new DeckDAO();
-        Deck deck = deckDAO.findById(1);
+        Deck deck = new Deck(); //deckDAO.findById(1);
+        deckDAO.addFlashcardToDeck(2,1);
+        System.out.println(flashcardDAO.findAll());
+        deck.setFlashcards(flashcardDAO.findAllByDeckId(1));
+        System.out.println(deck);
+
+
+        deckDAO.deleteFlashcardFromDeck(deck.getId(),2);
         deck.setFlashcards(flashcardDAO.findAllByDeckId(deck.getId()));
         System.out.println(deck);
+
+
     }
 
 

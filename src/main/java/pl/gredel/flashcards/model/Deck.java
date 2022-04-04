@@ -14,7 +14,7 @@ public class Deck implements DataTransferObject {
         return "Deck{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", user=" + user +
+                ", user=" + user.getLogin() +
                 ", flashcards=" + flashcards +
                 '}';
     }
