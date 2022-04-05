@@ -8,11 +8,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UsersDAO extends DataAccessObject<Users> {
 
+    private static final Logger LOGGER = Logger.getLogger( UsersDAO.class.getName() );
+
     private static final String INSERT = "INSERT INTO Users(login, password, email) VALUES (?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT id, login, password, email FROM Users WHERE id=?";
+    private static final String FIND_BY_LOGIN = "SELECT id, login, password, email FROM Users WHERE login=?";
     private static final String FIND_ALL = "SELECT id, login, password, email FROM Users";
     private static final String LAST_ID = "SELECT max(ID) FROM Users";
     private static final String UPDATE = "UPDATE Users SET login=?, password=?, email=?  WHERE id=?";
@@ -20,22 +26,44 @@ public class UsersDAO extends DataAccessObject<Users> {
 
     @Override
     public Users findById(int id) {
-        Users user = new Users();
+        Users user = null;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
+                user = new Users();
                 user.setId(resultSet.getInt(1));
                 user.setLogin(resultSet.getString(2));
                 user.setPassword(resultSet.getString(3));
                 user.setEmail(resultSet.getString(4));
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return user;
+    }
+
+
+    public Optional<Users> findByLogin(String login) {
+        Users user = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_LOGIN);
+            preparedStatement.setString(1, login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                user = new Users();
+                user.setId(resultSet.getInt(1));
+                user.setLogin(resultSet.getString(2));
+                user.setPassword(resultSet.getString(3));
+                user.setEmail(resultSet.getString(4));
+            }
+        } catch (SQLException sqlException) {
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new RuntimeException(sqlException);
+        }
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -56,7 +84,7 @@ public class UsersDAO extends DataAccessObject<Users> {
                 users.add(user);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return users;
@@ -73,7 +101,7 @@ public class UsersDAO extends DataAccessObject<Users> {
             preparedStatement.execute();
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return findById(dto.getId());
@@ -101,7 +129,7 @@ public class UsersDAO extends DataAccessObject<Users> {
 
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return dto;
@@ -114,7 +142,7 @@ public class UsersDAO extends DataAccessObject<Users> {
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }

@@ -8,8 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FlashcardDAO extends DataAccessObject<Flashcard> {
+
+    private static final Logger LOGGER = Logger.getLogger( FlashcardDAO.class.getName() );
+
+
     private static final String INSERT = "INSERT INTO Flashcard(title, question, answer, level, is_public, user_id, category_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM Flashcard WHERE id=?";
     private static final String FIND_ALL = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard";
@@ -42,7 +48,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
                 flashcard.setUser(user);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return flashcard;
@@ -55,7 +61,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL);
             return findAllTemplate(preparedStatement);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }
@@ -65,7 +71,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_PUBLIC);
             return findAllTemplate(preparedStatement);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
 
@@ -76,7 +82,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setInt(1, idDeck);
             return findAllTemplate(preparedStatement);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
 
@@ -89,7 +95,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setInt(1, id);
             return findAllTemplate(preparedStatement);
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
 
@@ -116,7 +122,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
                 flashcards.add(flashcard);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return flashcards;
@@ -136,7 +142,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.execute();
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return findById(dto.getId());
@@ -164,7 +170,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             }
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return dto;
@@ -177,7 +183,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }

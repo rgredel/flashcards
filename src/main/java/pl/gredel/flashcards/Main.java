@@ -1,26 +1,21 @@
 package pl.gredel.flashcards;
 
-import pl.gredel.flashcards.db.conf.ConnectionPool;
-import pl.gredel.flashcards.db.dao.CategoryDAO;
-import pl.gredel.flashcards.db.dao.DeckDAO;
-import pl.gredel.flashcards.db.dao.FlashcardDAO;
 import pl.gredel.flashcards.db.dao.UsersDAO;
-import pl.gredel.flashcards.model.Category;
-import pl.gredel.flashcards.model.Deck;
-import pl.gredel.flashcards.model.Flashcard;
+import pl.gredel.flashcards.model.Users;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
+import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
+        UsersDAO usersDAO = new UsersDAO();
+        Optional<Users> user = usersDAO.findByLogin("admin");
+        user.ifPresent(System.out::println);
+
+
         // uncomment to create tables and add test data
 //    DatabaseInitializer dbInit = new DatabaseInitializer();
 //    dbInit.init();
-
+ /*
             try {
                 Connection connection = ConnectionPool.getConnection();
                 Statement statement = connection.createStatement();
@@ -75,6 +70,7 @@ public class Main {
         deck.setFlashcards(flashcardDAO.findAllByDeckId(deck.getId()));
         System.out.println(deck);
 
+   */
 
     }
 

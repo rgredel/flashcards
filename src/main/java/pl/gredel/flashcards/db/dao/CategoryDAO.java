@@ -8,8 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CategoryDAO extends DataAccessObject<Category> {
+
+    private static final Logger LOGGER = Logger.getLogger( CategoryDAO.class.getName() );
+
 
     private static final String INSERT = "INSERT INTO Category(name) VALUES (?)";
     private static final String FIND_BY_ID = "SELECT id, name FROM Category WHERE id=?";
@@ -17,6 +22,7 @@ public class CategoryDAO extends DataAccessObject<Category> {
     private static final String LAST_ID = "SELECT max(ID) FROM Category";
     private static final String UPDATE = "UPDATE Category SET name = ? WHERE id=?";
     private static final String DELETE = "DELETE FROM Category WHERE id=?";
+
 
 
     @Override
@@ -31,7 +37,7 @@ public class CategoryDAO extends DataAccessObject<Category> {
                 category.setName(resultSet.getString(2));
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return category;
@@ -51,7 +57,7 @@ public class CategoryDAO extends DataAccessObject<Category> {
                 categories.add(category);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return categories;
@@ -66,7 +72,7 @@ public class CategoryDAO extends DataAccessObject<Category> {
             preparedStatement.execute();
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return findById(dto.getId());
@@ -89,7 +95,7 @@ public class CategoryDAO extends DataAccessObject<Category> {
 
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return dto;
@@ -102,7 +108,7 @@ public class CategoryDAO extends DataAccessObject<Category> {
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }

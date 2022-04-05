@@ -9,11 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DeckDAO  extends DataAccessObject<Deck> {
 
-    private static final String INSERT = "INSERT INTO Deck(name, user_id) VALUES (?, ?)";
+    private static final Logger LOGGER = Logger.getLogger( DeckDAO.class.getName() );
 
+    private static final String INSERT = "INSERT INTO Deck(name, user_id) VALUES (?, ?)";
     private static final String FIND_BY_ID = "SELECT id, name, user_id FROM Deck WHERE id=?";
     private static final String FIND_ALL = "SELECT id, name, user_id FROM Deck";
     private static final String LAST_ID = "SELECT max(ID) FROM Deck";
@@ -37,7 +40,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
                 deck.setUser(user);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return deck;
@@ -60,7 +63,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
                 decks.add(deck);
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return decks;
@@ -76,7 +79,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             preparedStatement.execute();
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return findById(dto.getId());
@@ -100,7 +103,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
 
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
         return dto;
@@ -113,7 +116,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }
@@ -124,7 +127,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             preparedStatement.setInt(2,idFlashcard);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }
@@ -135,7 +138,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
             preparedStatement.setInt(2, idFlashcard);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new RuntimeException(sqlException);
         }
     }
