@@ -1,7 +1,5 @@
 package pl.gredel.flashcards.db.conf;
 
-import pl.gredel.flashcards.db.dao.util.DataAccessObject;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -41,15 +39,8 @@ public class DatabaseInitializer {
     }
 
     public void init() {
-        Connection connection;
         try {
-            connection = ConnectionPool.getConnection();
-        } catch (SQLException sqlException) {
-            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
-        }
-
-        try {
+            Connection connection = ConnectionPool.getConnection();
             Statement statement = connection.createStatement();
             statement.executeUpdate(getStatement());
         } catch (SQLException sqlException) {
