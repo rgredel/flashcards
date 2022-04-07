@@ -32,11 +32,12 @@ public class CategoryDAO extends DataAccessObject<Category> {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                category = new Category();
-                category.setId(resultSet.getInt(1));
-                category.setName(resultSet.getString(2));
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    category = new Category();
+                    category.setId(resultSet.getInt(1));
+                    category.setName(resultSet.getString(2));
+                }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
@@ -53,12 +54,13 @@ public class CategoryDAO extends DataAccessObject<Category> {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL)){
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Category category = new Category();
-                category.setId(resultSet.getInt(1));
-                category.setName(resultSet.getString(2));
-                categories.add(category);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Category category = new Category();
+                    category.setId(resultSet.getInt(1));
+                    category.setName(resultSet.getString(2));
+                    categories.add(category);
+                }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);

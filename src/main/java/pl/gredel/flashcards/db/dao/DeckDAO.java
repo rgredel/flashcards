@@ -29,16 +29,17 @@ public class DeckDAO  extends DataAccessObject<Deck> {
     public Optional<Deck> findById(int id) throws DAOException {
         Deck deck = null;
          try(Connection connection = ConnectionPool.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID) ){
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID) ){
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                deck = new Deck();
-                deck.setId(resultSet.getInt(1));
-                deck.setName(resultSet.getString(2));
-                UsersDAO usersDAO = new UsersDAO();
-                Users user = usersDAO.findById(resultSet.getInt(3)).get();
-                deck.setUser(user);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    deck = new Deck();
+                    deck.setId(resultSet.getInt(1));
+                    deck.setName(resultSet.getString(2));
+                    UsersDAO usersDAO = new UsersDAO();
+                    Users user = usersDAO.findById(resultSet.getInt(3)).get();
+                    deck.setUser(user);
+                }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
@@ -54,17 +55,17 @@ public class DeckDAO  extends DataAccessObject<Deck> {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL)){
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Deck deck = new Deck();
-                deck.setId(resultSet.getInt(1));
-                deck.setName(resultSet.getString(2));
-                UsersDAO usersDAO = new UsersDAO();
-                Users user = usersDAO.findById(resultSet.getInt(3)).get();
-                deck.setUser(user);
-                decks.add(deck);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Deck deck = new Deck();
+                    deck.setId(resultSet.getInt(1));
+                    deck.setName(resultSet.getString(2));
+                    UsersDAO usersDAO = new UsersDAO();
+                    Users user = usersDAO.findById(resultSet.getInt(3)).get();
+                    deck.setUser(user);
+                    decks.add(deck);
+                }
             }
-
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new DAOException("Find all Decks failed.", sqlException);

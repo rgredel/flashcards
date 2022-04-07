@@ -30,13 +30,14 @@ public class UsersDAO extends DataAccessObject<Users> {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)){
 
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                user = new Users();
-                user.setId(resultSet.getInt(1));
-                user.setLogin(resultSet.getString(2));
-                user.setPassword(resultSet.getString(3));
-                user.setEmail(resultSet.getString(4));
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    user = new Users();
+                    user.setId(resultSet.getInt(1));
+                    user.setLogin(resultSet.getString(2));
+                    user.setPassword(resultSet.getString(3));
+                    user.setEmail(resultSet.getString(4));
+                }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
@@ -72,16 +73,17 @@ public class UsersDAO extends DataAccessObject<Users> {
 
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL) ){
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Users user = new Users();
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Users user = new Users();
 
-                user.setId(resultSet.getInt(1));
-                user.setLogin(resultSet.getString(2));
-                user.setPassword(resultSet.getString(3));
-                user.setEmail(resultSet.getString(4));
+                    user.setId(resultSet.getInt(1));
+                    user.setLogin(resultSet.getString(2));
+                    user.setPassword(resultSet.getString(3));
+                    user.setEmail(resultSet.getString(4));
 
-                users.add(user);
+                    users.add(user);
+                }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);

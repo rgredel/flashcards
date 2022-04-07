@@ -34,20 +34,21 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID) ){
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                flashcard = new Flashcard();
-                flashcard.setId(resultSet.getInt(1));
-                flashcard.setTitle(resultSet.getString(2));
-                flashcard.setQuestion(resultSet.getString(3));
-                flashcard.setAnswer(resultSet.getString(4));
-                flashcard.setLevel(resultSet.getInt(5));
-                flashcard.setPublic(resultSet.getBoolean(6));
-                UsersDAO usersDAO = new UsersDAO();
-                Users user = usersDAO.findById(resultSet.getInt(7)).get();
-                CategoryDAO categoryDAO = new CategoryDAO();
-                flashcard.setCategory(categoryDAO.findById(resultSet.getInt(8)).get());
-                flashcard.setUser(user);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    flashcard = new Flashcard();
+                    flashcard.setId(resultSet.getInt(1));
+                    flashcard.setTitle(resultSet.getString(2));
+                    flashcard.setQuestion(resultSet.getString(3));
+                    flashcard.setAnswer(resultSet.getString(4));
+                    flashcard.setLevel(resultSet.getInt(5));
+                    flashcard.setPublic(resultSet.getBoolean(6));
+                    UsersDAO usersDAO = new UsersDAO();
+                    Users user = usersDAO.findById(resultSet.getInt(7)).get();
+                    CategoryDAO categoryDAO = new CategoryDAO();
+                    flashcard.setCategory(categoryDAO.findById(resultSet.getInt(8)).get());
+                    flashcard.setUser(user);
+                }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
@@ -111,8 +112,8 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
 
     private List<Flashcard> findAllTemplate(PreparedStatement preparedStatement) throws SQLException, DAOException {
         List<Flashcard> flashcards = new ArrayList<>();
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+        try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
                 Flashcard flashcard = new Flashcard();
                 flashcard.setId(resultSet.getInt(1));
                 flashcard.setTitle(resultSet.getString(2));
@@ -127,6 +128,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
                 flashcard.setUser(user);
                 flashcards.add(flashcard);
             }
+        }
         return flashcards;
     }
 
@@ -170,12 +172,8 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't created.");
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    dto.setId(generatedKeys.getInt(1));
-                }
-                else {
-                    throw new DAOException("Flashcard wasn't created, no ID obtained.");
-                }
+                if (generatedKeys.next()) dto.setId(generatedKeys.getInt(1));
+                else throw new DAOException("Flashcard wasn't created, no ID obtained.");
             }
 
         } catch (SQLException sqlException) {
