@@ -1,6 +1,7 @@
 package pl.gredel.flashcards.db.dao;
 
 import pl.gredel.flashcards.db.conf.ConnectionPool;
+import pl.gredel.flashcards.db.dao.util.DAOException;
 import pl.gredel.flashcards.db.dao.util.DataAccessObject;
 import pl.gredel.flashcards.model.Flashcard;
 import pl.gredel.flashcards.model.Users;
@@ -28,7 +29,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
 
 
     @Override
-    public Optional<Flashcard> findById(int id) {
+    public Optional<Flashcard> findById(int id) throws DAOException {
         Flashcard flashcard = null;
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID) ){
@@ -50,13 +51,14 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding Flashcard by id failed.", sqlException);
         }
         return Optional.ofNullable(flashcard);
     }
 
 
     @Override
-    public List<Flashcard> findAll() {
+    public List<Flashcard> findAll() throws DAOException {
         List<Flashcard> flashcards = new ArrayList<>();
 
         try(Connection connection = ConnectionPool.getConnection();
@@ -64,21 +66,24 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding all Flashcards failed.", sqlException);
+
         }
         return flashcards;
     }
 
-    public List<Flashcard> findAllPublic() {
+    public List<Flashcard> findAllPublic() throws DAOException {
         List<Flashcard> flashcards = new ArrayList<>();
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_PUBLIC) ){
             flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding all public Decks failed.", sqlException);
         }
         return flashcards;
     }
-    public List<Flashcard> findAllByDeckId(int idDeck) {
+    public List<Flashcard> findAllByDeckId(int idDeck) throws DAOException {
         List<Flashcard> flashcards = new ArrayList<>();
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_DECK) ){
@@ -86,11 +91,12 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding all Flashcards by Decks id failed.", sqlException);
         }
         return flashcards;
     }
 
-    public List<Flashcard> findAllByUserId(int id) {
+    public List<Flashcard> findAllByUserId(int id) throws DAOException {
         List<Flashcard> flashcards = new ArrayList<>();
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_USER)){
@@ -98,11 +104,12 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding all Flashcards by User id failed.", sqlException);
         }
         return flashcards;
     }
 
-    private List<Flashcard> findAllTemplate(PreparedStatement preparedStatement) throws SQLException {
+    private List<Flashcard> findAllTemplate(PreparedStatement preparedStatement) throws SQLException, DAOException {
         List<Flashcard> flashcards = new ArrayList<>();
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -124,7 +131,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
     }
 
     @Override
-    public Flashcard update(Flashcard dto) {
+    public Flashcard update(Flashcard dto) throws DAOException {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE) ){
             preparedStatement.setString(1,dto.getTitle());
@@ -136,15 +143,18 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setInt(7,dto.getCategory().getId());
 
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new SQLException("Update Flashcard failed.");
+            if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't updated.");
+
+            return findById(dto.getId()).get();
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Updating Flashcard failed.", sqlException);
         }
-        return findById(dto.getId()).get();
+
     }
 
     @Override
-    public Flashcard create(Flashcard dto) {
+    public Flashcard create(Flashcard dto) throws DAOException {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS) ){
 
@@ -157,33 +167,35 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setInt(7,dto.getCategory().getId());
 
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new SQLException("Creating Flashcard failed.");
+            if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't created.");
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     dto.setId(generatedKeys.getInt(1));
                 }
                 else {
-                    throw new SQLException("Creating Flashcard failed, no ID obtained.");
+                    throw new DAOException("Flashcard wasn't created, no ID obtained.");
                 }
             }
 
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Creating Flashcard failed.", sqlException);
         }
         return dto;
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws DAOException {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE) ){
             preparedStatement.setInt(1, id);
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new SQLException("Deleting failed.");
+            if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't updated");
 
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Deleting Flashcard failed.", sqlException);
         }
     }
 }

@@ -1,6 +1,7 @@
 package pl.gredel.flashcards.db.dao;
 
 import pl.gredel.flashcards.db.conf.ConnectionPool;
+import pl.gredel.flashcards.db.dao.util.DAOException;
 import pl.gredel.flashcards.db.dao.util.DataAccessObject;
 import pl.gredel.flashcards.model.Users;
 
@@ -23,7 +24,7 @@ public class UsersDAO extends DataAccessObject<Users> {
     private static final String DELETE = "DELETE FROM Users WHERE id=?";
 
     @Override
-    public Optional<Users> findById(int id) {
+    public Optional<Users> findById(int id) throws DAOException {
         Users user = null;
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)){
@@ -39,12 +40,13 @@ public class UsersDAO extends DataAccessObject<Users> {
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding User by id failed.", sqlException);
         }
         return Optional.ofNullable(user);
     }
 
 
-    public Optional<Users> findByLogin(String login) {
+    public Optional<Users> findByLogin(String login) throws DAOException {
         Users user = null;
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_LOGIN) ){
@@ -59,12 +61,13 @@ public class UsersDAO extends DataAccessObject<Users> {
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding User by login failed.", sqlException);
         }
         return Optional.ofNullable(user);
     }
 
     @Override
-    public List<Users> findAll() {
+    public List<Users> findAll() throws DAOException {
         List<Users> users = new ArrayList<>();
 
         try(Connection connection = ConnectionPool.getConnection();
@@ -82,12 +85,13 @@ public class UsersDAO extends DataAccessObject<Users> {
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Finding all Users failed.", sqlException);
         }
         return users;
     }
 
     @Override
-    public Users update(Users dto) {
+    public Users update(Users dto) throws DAOException {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE) ){
             preparedStatement.setString(1,dto.getLogin());
@@ -96,16 +100,17 @@ public class UsersDAO extends DataAccessObject<Users> {
             preparedStatement.setInt(4,dto.getId());
 
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new SQLException("Update Users failed.");
-
+            if (affectedRows == 0 ) throw new DAOException("User wasn't updated.");
+            return findById(dto.getId()).get();
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Updating User failed.", sqlException);
         }
-        return findById(dto.getId()).get();
+
     }
 
     @Override
-    public Users create(Users dto) {
+    public Users create(Users dto) throws DAOException {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS) ){
             preparedStatement.setString(1, dto.getLogin());
@@ -113,31 +118,34 @@ public class UsersDAO extends DataAccessObject<Users> {
             preparedStatement.setString(3, dto.getEmail());
 
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new SQLException("Creating Users failed.");
+            if (affectedRows == 0 ) throw new DAOException("User wasn't created.");
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     dto.setId(generatedKeys.getInt(1));
                 }
                 else {
-                    throw new SQLException("Creating Users failed, no ID obtained.");
+                    throw new DAOException("User wasn't created, no ID obtained.");
                 }
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Creating User failed.", sqlException);
+
         }
         return dto;
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws DAOException {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE) ){
             preparedStatement.setInt(1, id);
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new SQLException("Deleting failed.");
+            if (affectedRows == 0 ) throw new DAOException("User wasn't deleted.");
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Deleting User failed.", sqlException);
         }
     }
 }
