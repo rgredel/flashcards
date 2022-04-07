@@ -7,7 +7,7 @@ import java.util.List;
 public class Deck implements DataTransferObject {
     private int id;
     private String name;
-    Users user;
+    private Users user;
 
     @Override
     public String toString() {

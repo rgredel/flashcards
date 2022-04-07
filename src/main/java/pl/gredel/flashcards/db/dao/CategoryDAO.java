@@ -1,20 +1,21 @@
 package pl.gredel.flashcards.db.dao;
 
+import pl.gredel.flashcards.db.conf.ConnectionPool;
 import pl.gredel.flashcards.db.dao.util.DataAccessObject;
 import pl.gredel.flashcards.model.Category;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CategoryDAO extends DataAccessObject<Category> {
 
     private static final Logger LOGGER = Logger.getLogger( CategoryDAO.class.getName() );
-
 
     private static final String INSERT = "INSERT INTO Category(name) VALUES (?)";
     private static final String FIND_BY_ID = "SELECT id, name FROM Category WHERE id=?";
@@ -26,29 +27,31 @@ public class CategoryDAO extends DataAccessObject<Category> {
 
 
     @Override
-    public Category findById(int id) {
-        Category category = new Category();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID);
+    public Optional<Category> findById(int id) {
+        Category category = null;
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
+                category = new Category();
                 category.setId(resultSet.getInt(1));
                 category.setName(resultSet.getString(2));
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-        return category;
+
+        return Optional.ofNullable(category);
     }
 
     @Override
     public List<Category> findAll() {
         List<Category> categories = new ArrayList<>();
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL);
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL)){
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Category category = new Category();
@@ -58,58 +61,58 @@ public class CategoryDAO extends DataAccessObject<Category> {
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
         return categories;
     }
 
     @Override
     public Category update(Category dto) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);
+        try (Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {
             preparedStatement.setString(1,dto.getName());
             preparedStatement.setInt(2,dto.getId());
-            preparedStatement.execute();
 
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0 ) throw new SQLException("Update Deck failed.");
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-        return findById(dto.getId());
+        return findById(dto.getId()).get();
     }
 
     @Override
     public Category create(Category dto) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT);
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)){
+
             preparedStatement.setString(1,dto.getName());
-            preparedStatement.execute();
-            preparedStatement = connection.prepareStatement(LAST_ID);
+            int affectedRows = preparedStatement.executeUpdate();
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            int id;
-            while (resultSet.next()) {
-                id = resultSet.getInt(1);
-                dto = (findById(id));
+            if (affectedRows == 0 ) throw new SQLException("Creating user failed.");
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    dto.setId(generatedKeys.getInt(1));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
             }
-
 
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
         return dto;
     }
 
     @Override
     public void delete(int id) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE);
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE)){
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
     }
 }

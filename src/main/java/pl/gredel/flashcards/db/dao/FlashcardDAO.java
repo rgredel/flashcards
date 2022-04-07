@@ -1,13 +1,14 @@
 package pl.gredel.flashcards.db.dao;
 
+import pl.gredel.flashcards.db.conf.ConnectionPool;
 import pl.gredel.flashcards.db.dao.util.DataAccessObject;
 import pl.gredel.flashcards.model.Flashcard;
 import pl.gredel.flashcards.model.Users;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +20,6 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
     private static final String INSERT = "INSERT INTO Flashcard(title, question, answer, level, is_public, user_id, category_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM Flashcard WHERE id=?";
     private static final String FIND_ALL = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard";
-    private static final String LAST_ID = "SELECT max(ID) FROM Flashcard";
     private static final String UPDATE = "UPDATE Flashcard SET title = ?, question = ?, answer = ?, level = ?, is_public = ?, user_id = ?, category_id = ? WHERE id=?";
     private static final String DELETE = "DELETE FROM Flashcard WHERE id=?";
     private static final String FIND_ALL_PUBLIC = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard WHERE is_public='t'";
@@ -28,13 +28,14 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
 
 
     @Override
-    public Flashcard findById(int id) {
-        Flashcard flashcard = new Flashcard();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID);
+    public Optional<Flashcard> findById(int id) {
+        Flashcard flashcard = null;
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID) ){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
+                flashcard = new Flashcard();
                 flashcard.setId(resultSet.getInt(1));
                 flashcard.setTitle(resultSet.getString(2));
                 flashcard.setQuestion(resultSet.getString(3));
@@ -42,69 +43,67 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
                 flashcard.setLevel(resultSet.getInt(5));
                 flashcard.setPublic(resultSet.getBoolean(6));
                 UsersDAO usersDAO = new UsersDAO();
-                Users user = usersDAO.findById(resultSet.getInt(7));
+                Users user = usersDAO.findById(resultSet.getInt(7)).get();
                 CategoryDAO categoryDAO = new CategoryDAO();
-                flashcard.setCategory(categoryDAO.findById(resultSet.getInt(8)));
+                flashcard.setCategory(categoryDAO.findById(resultSet.getInt(8)).get());
                 flashcard.setUser(user);
             }
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-        return flashcard;
+        return Optional.ofNullable(flashcard);
     }
 
 
     @Override
     public List<Flashcard> findAll() {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL);
-            return findAllTemplate(preparedStatement);
+        List<Flashcard> flashcards = new ArrayList<>();
+
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL)){
+            flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
+        return flashcards;
     }
 
     public List<Flashcard> findAllPublic() {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_PUBLIC);
-            return findAllTemplate(preparedStatement);
+        List<Flashcard> flashcards = new ArrayList<>();
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_PUBLIC) ){
+            flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-
+        return flashcards;
     }
     public List<Flashcard> findAllByDeckId(int idDeck) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_DECK);
+        List<Flashcard> flashcards = new ArrayList<>();
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_DECK) ){
             preparedStatement.setInt(1, idDeck);
-            return findAllTemplate(preparedStatement);
+            flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-
+        return flashcards;
     }
 
     public List<Flashcard> findAllByUserId(int id) {
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_USER);
+        List<Flashcard> flashcards = new ArrayList<>();
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_USER)){
             preparedStatement.setInt(1, id);
-            return findAllTemplate(preparedStatement);
+            flashcards.addAll(findAllTemplate(preparedStatement));
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-
+        return flashcards;
     }
 
-    private List<Flashcard> findAllTemplate(PreparedStatement preparedStatement) {
+    private List<Flashcard> findAllTemplate(PreparedStatement preparedStatement) throws SQLException {
         List<Flashcard> flashcards = new ArrayList<>();
-
-        try {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Flashcard flashcard = new Flashcard();
@@ -115,23 +114,19 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
                 flashcard.setLevel(resultSet.getInt(5));
                 flashcard.setPublic(resultSet.getBoolean(6));
                 UsersDAO usersDAO = new UsersDAO();
-                Users user = usersDAO.findById(resultSet.getInt(7));
+                Users user = usersDAO.findById(resultSet.getInt(7)).get();
                 CategoryDAO categoryDAO = new CategoryDAO();
-                flashcard.setCategory(categoryDAO.findById(resultSet.getInt(8)));
+                flashcard.setCategory(categoryDAO.findById(resultSet.getInt(8)).get());
                 flashcard.setUser(user);
                 flashcards.add(flashcard);
             }
-        } catch (SQLException sqlException) {
-            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
-        }
         return flashcards;
     }
 
     @Override
     public Flashcard update(Flashcard dto) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE) ){
             preparedStatement.setString(1,dto.getTitle());
             preparedStatement.setString(2,dto.getQuestion());
             preparedStatement.setString(3,dto.getAnswer());
@@ -139,19 +134,20 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setBoolean(5,dto.isPublic());
             preparedStatement.setInt(6,dto.getUser().getId());
             preparedStatement.setInt(7,dto.getCategory().getId());
-            preparedStatement.execute();
 
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0 ) throw new SQLException("Update Flashcard failed.");
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
-        return findById(dto.getId());
+        return findById(dto.getId()).get();
     }
 
     @Override
     public Flashcard create(Flashcard dto) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT);
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS) ){
+
             preparedStatement.setString(1,dto.getTitle());
             preparedStatement.setString(2,dto.getQuestion());
             preparedStatement.setString(3,dto.getAnswer());
@@ -159,32 +155,35 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setBoolean(5,dto.isPublic());
             preparedStatement.setInt(6,dto.getUser().getId());
             preparedStatement.setInt(7,dto.getCategory().getId());
-            preparedStatement.execute();
 
-            preparedStatement = connection.prepareStatement(LAST_ID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            int id;
-            while (resultSet.next()) {
-                id = resultSet.getInt(1);
-                dto = (findById(id));
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0 ) throw new SQLException("Creating Flashcard failed.");
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    dto.setId(generatedKeys.getInt(1));
+                }
+                else {
+                    throw new SQLException("Creating Flashcard failed, no ID obtained.");
+                }
             }
 
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
         return dto;
     }
 
     @Override
     public void delete(int id) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE);
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE) ){
             preparedStatement.setInt(1, id);
-            preparedStatement.execute();
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0 ) throw new SQLException("Deleting failed.");
+
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
-            throw new RuntimeException(sqlException);
         }
     }
 }

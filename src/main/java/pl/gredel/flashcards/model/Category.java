@@ -1,5 +1,4 @@
 package pl.gredel.flashcards.model;
-
 import pl.gredel.flashcards.db.dao.util.DataTransferObject;
 
 public class Category implements DataTransferObject {
@@ -10,6 +9,7 @@ public class Category implements DataTransferObject {
         this.id = id;
         this.name = name;
     }
+    public Category() {}
 
     @Override
     public String toString() {
@@ -17,9 +17,6 @@ public class Category implements DataTransferObject {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
-
-    public Category() {
     }
 
     public int getId() {

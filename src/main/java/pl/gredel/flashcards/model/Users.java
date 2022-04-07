@@ -9,14 +9,15 @@ public class Users implements DataTransferObject{
     private String login;
     private String password;
     private String email;
-    List<Flashcard> flashcards;
-    List<Deck> decks;
+    private List<Flashcard> flashcards;
+    private List<Deck> decks;
 
     public Users(String login, String password, String email) {
         this.login = login;
         this.password = password;
         this.email = email;
     }
+    public Users() { }
 
     @Override
     public String toString() {
@@ -28,10 +29,6 @@ public class Users implements DataTransferObject{
                 ", flashcards=" + flashcards +
                 ", decks=" + decks +
                 '}';
-    }
-
-    public Users() {
-
     }
 
     public List<Deck> getDecks() {

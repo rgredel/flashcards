@@ -9,8 +9,8 @@ public class Flashcard implements DataTransferObject {
     private String answer;
     private int level;
     private boolean isPublic;
-    Users user;
-    Category category;
+    private Users user;
+    private Category category;
 
 
     public Flashcard(String title, String question, String answer, int level, boolean isPublic, Users user, Category category) {
@@ -22,6 +22,8 @@ public class Flashcard implements DataTransferObject {
         this.user = user;
         this.category = category;
     }
+
+    public Flashcard() { }
 
     @Override
     public String toString() {
@@ -35,9 +37,6 @@ public class Flashcard implements DataTransferObject {
                 ", user=" + user.getLogin() +
                 ", category=" + category.getName() +
                 '}';
-    }
-
-    public Flashcard() {
     }
 
     public Category getCategory() {
