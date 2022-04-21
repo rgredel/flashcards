@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-    <title>Home</title>
+    <title>Decks</title>
 </head>
 <body>
 
@@ -18,8 +18,8 @@
                 <a class="navbar-brand" href="#">Flashcards</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="home">Home</a></li>
-                <li><a href="decks">Decks</a></li>
+                <li><a href="home">Home</a></li>
+                <li class="active"><a href="decks">Decks</a></li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Flashcards
                         <span class="caret"></span></a>
@@ -32,13 +32,15 @@
                 <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> <h3><%=session.getAttribute("username")%></h3></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span><h3><%=session.getAttribute("username")%></h3></a></li>
                 <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
             </ul>
         </div>
     </nav>
 </header>
-
+<div class="container">
+    <h1>Some Decks</h1>
+</div>
 
 <footer class="bg-light text-center text-lg-start">
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
