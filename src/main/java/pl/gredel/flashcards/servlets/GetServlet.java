@@ -8,11 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@WebServlet("/home")
 public class GetServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reponse = "<html><h1>Helloo!!</></html>";
-        PrintWriter writer = resp.getWriter();
-        writer.write(reponse);
+
     }
 }
