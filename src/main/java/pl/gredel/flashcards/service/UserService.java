@@ -32,5 +32,19 @@ public class UserService {
 
 
     }
-    
+
+    public boolean login(String login, String password) throws ServiceException {
+        Optional<Users> userFromDB = null;
+        try {
+            userFromDB = usersDAO.findByLogin(login);
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error. Please try again.", e);
+        }
+        if(!userFromDB.isPresent())
+            throw new ServiceException("User don't exists!");
+
+        if (userFromDB.get().getPassword().equals(password)) return true;
+        else throw new ServiceException("Incorrect password!");
+    }
 }

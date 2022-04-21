@@ -31,7 +31,7 @@ public class RegisterServlet extends HttpServlet {
             UserService userService = new UserService();
             try {
                 userService.register(username, password, email);
-                System.out.println("Registered");
+                req.getRequestDispatcher("/login").forward(req,resp);
             } catch (ServiceException e) {
                 failureMessage = e.getMessage();
                 req.setAttribute("error",failureMessage);

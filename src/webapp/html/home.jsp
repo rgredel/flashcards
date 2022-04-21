@@ -32,8 +32,8 @@
                 <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Username</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span> <%=session.getAttribute("username")%>></a></li>
+                <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
             </ul>
         </div>
     </nav>

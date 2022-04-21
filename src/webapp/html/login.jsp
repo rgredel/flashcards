@@ -15,28 +15,36 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Flashcards</a>
+          <a class="navbar-brand">Flashcards</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="home">Home</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li><a href="register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         </ul>
       </div>
     </nav>
   </header>
 
   <div class="container">
-    <form class="form-signin">
+    <form class="form-signin" method="post" action="login">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+      <%
+        if (request.getAttribute("error") != null) {
+      %>
+      <strong>Error! </strong>
+      <%=request.getAttribute("error")%><br />
+      <%
+        }
+      %>
       <label for="inputUsername" class="sr-only">Username</label>
-      <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
+      <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="" name="username">
       <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" name="password">
       <div class="checkbox mb-3">
         <label>
           <input type="checkbox" value="remember-me"> Remember me

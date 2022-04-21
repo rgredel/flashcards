@@ -15,16 +15,16 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Flashcards</a>
+          <a class="navbar-brand">Flashcards</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="home">Home</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li><a href="register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         </ul>
       </div>
     </nav>
