@@ -2,8 +2,12 @@ package pl.gredel.flashcards.db.conf;
 
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import pl.gredel.flashcards.db.dao.CategoryDAO;
 
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -37,9 +41,22 @@ public class ConnectionPool {
         }
 
         private ConnectionPool(){}
-
+        //TODO
+        //refactor
         public static Connection getConnection() throws SQLException {
-                return ds.getConnection();
+            Connection connection = null;
+            try {
+                Context initContext = new InitialContext();
+                Context envContext = null;
+                envContext = (Context) initContext.lookup("java:/comp/env");
+                DataSource dataSource = (DataSource) envContext.lookup("jdbc/flashcard");
+                connection = dataSource.getConnection();
+            } catch (NamingException e) {
+                e.printStackTrace();
+            }
+            return connection;
+
+               // return ds.getConnection();
         }
 
 
