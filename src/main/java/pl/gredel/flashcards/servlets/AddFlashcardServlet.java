@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 @WebServlet("/flashcards/add")
 public class AddFlashcardServlet extends HttpServlet {
-    private static Logger LOGGER = Logger.getLogger( AddFlashcardServlet.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( AddFlashcardServlet.class.getName() );
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

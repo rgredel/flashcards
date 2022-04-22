@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class CategoryService {
 
     CategoryDAO categoryDAO = new CategoryDAO();
-    private static Logger LOGGER = Logger.getLogger( CategoryService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger( CategoryService.class.getName());
 
     public List<Category> getAllCategories() throws ServiceException {
         List<Category> categories = new ArrayList<>();

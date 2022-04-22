@@ -3,7 +3,6 @@ package pl.gredel.flashcards.servlets;
 import pl.gredel.flashcards.service.UserService;
 import pl.gredel.flashcards.service.util.ServiceException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

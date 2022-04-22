@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 @WebServlet("/flashcards/delete")
 public class DeleteFlashcardServlet extends HttpServlet {
-    private static Logger LOGGER = Logger.getLogger( DeleteFlashcardServlet.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( DeleteFlashcardServlet.class.getName() );
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        int flashcardId = Integer.parseInt(req.getParameter("flashcardId"));
