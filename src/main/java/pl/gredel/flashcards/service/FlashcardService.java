@@ -39,6 +39,18 @@ public class FlashcardService {
             throw new ServiceException("Unexpected error! Cannot add flashcard.", e);
         }
     }
+    public void updateFlashcard(int id, String title, String question, String answer, int categoryId, boolean isPublic, String username, int level) throws ServiceException {
+        UserService userService = new UserService();
+        Users user = userService.getUserByLogin(username);
+        Category category = new Category(categoryId);
+        Flashcard flashcard = new Flashcard(id, title,question,answer,level,isPublic,user,category);
+        try {
+            flashcardDAO.update(flashcard);
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error! Cannot add flashcard.", e);
+        }
+    }
 
     public void delete(int flashcardId) throws ServiceException {
         try {

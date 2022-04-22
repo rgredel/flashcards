@@ -140,9 +140,10 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setString(2,dto.getQuestion());
             preparedStatement.setString(3,dto.getAnswer());
             preparedStatement.setInt(4,dto.getLevel());
-            preparedStatement.setBoolean(5,dto.isPublic());
+            preparedStatement.setBoolean(5,dto.isAPublic());
             preparedStatement.setInt(6,dto.getUser().getId());
             preparedStatement.setInt(7,dto.getCategory().getId());
+            preparedStatement.setInt(8,dto.getId());
 
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't updated.");
@@ -164,7 +165,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setString(2,dto.getQuestion());
             preparedStatement.setString(3,dto.getAnswer());
             preparedStatement.setInt(4,dto.getLevel());
-            preparedStatement.setBoolean(5,dto.isPublic());
+            preparedStatement.setBoolean(5,dto.isAPublic());
             preparedStatement.setInt(6,dto.getUser().getId());
             preparedStatement.setInt(7,dto.getCategory().getId());
 

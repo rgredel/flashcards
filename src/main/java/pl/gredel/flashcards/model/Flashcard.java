@@ -100,7 +100,8 @@ public class Flashcard implements DataTransferObject {
         this.level = level;
     }
 
-    public boolean isPublic() {
+    // jsp convert isPublic to property "public" which is invalid
+    public boolean isAPublic() {
         return isPublic;
     }
 
