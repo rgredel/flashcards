@@ -22,7 +22,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
     private static final String FIND_BY_ID = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM Flashcard WHERE id=?";
     private static final String FIND_ALL = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard";
     private static final String UPDATE = "UPDATE Flashcard SET title = ?, question = ?, answer = ?, level = ?, is_public = ?, user_id = ?, category_id = ? WHERE id=?";
-    private static final String DELETE = "DELETE FROM Flashcard WHERE id=?";
+    private static final String DELETE = "DELETE FROM deck_flashcard WHERE flashcard_id = ? ; DELETE FROM Flashcard WHERE id=?";
     private static final String FIND_ALL_PUBLIC = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard WHERE is_public='t'";
     private static final String FIND_ALL_BY_USER = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard WHERE user_id=?";
     private static final String FIND_ALL_BY_DECK = "SELECT id, title, question, answer, level, is_public, user_id, category_id FROM flashcard join deck_flashcard on id = flashcard_id WHERE deck_flashcard.deck_id=?";
@@ -188,6 +188,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
         try(Connection connection = ConnectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE) ){
             preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, id);
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't updated");
 
