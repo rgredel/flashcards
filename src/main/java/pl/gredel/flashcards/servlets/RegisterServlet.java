@@ -36,8 +36,7 @@ public class RegisterServlet extends HttpServlet {
                 req.setAttribute("error",failureMessage);
                 req.getRequestDispatcher("/html/register.jsp").forward(req,resp);
             }
-        }
-        else{
+        } else{
         req.setAttribute("error","Passwords do not match.");
         req.getRequestDispatcher("/html/register.jsp").forward(req,resp);
         }

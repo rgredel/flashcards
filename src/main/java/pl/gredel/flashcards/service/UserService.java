@@ -21,8 +21,9 @@ public class UserService {
 
         try {
             Optional<Users> userFromDB = usersDAO.findByLogin(login);
-            if(userFromDB.isPresent())
+            if(userFromDB.isPresent()) {
                 throw new ServiceException("User already exists!");
+            }
 
             Users user = new Users(login, password, email);
             usersDAO.create(user);
@@ -40,11 +41,15 @@ public class UserService {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             throw new ServiceException("Unexpected error. Please try again.", e);
         }
-        if(!userFromDB.isPresent())
+        if(!userFromDB.isPresent()) {
             throw new ServiceException("User don't exists!");
+        }
 
-        if (userFromDB.get().getPassword().equals(password)) return true;
-        else throw new ServiceException("Incorrect password!");
+        if (userFromDB.get().getPassword().equals(password)) {
+            return true;
+        } else {
+            throw new ServiceException("Incorrect password!");
+        }
     }
 
     public Users getUserByLogin(String login) throws ServiceException {
