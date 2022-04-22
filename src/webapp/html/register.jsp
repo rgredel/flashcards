@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,17 +34,9 @@
   <div class="container">
     <form class="form-signup" method="post" action="/register">
       <h1 class="h3 mb-3 font-weight-normal">Please Sign Up</h1><br />
-
-
-        <%
-          if (request.getAttribute("error") != null) {
-        %>
-        <strong>Error! </strong>
-        <%=request.getAttribute("error")%><br />
-        <%
-          }
-        %>
-
+      <c:if test="${not empty requestScope.error}">
+        <strong>Error! </strong> <c:out value="${requestScope.error}"/><br />
+      </c:if>
       <label for="inputUsername" class="sr-only">Username</label>
       <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="" name="username">
 

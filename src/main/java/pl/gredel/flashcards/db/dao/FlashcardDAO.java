@@ -191,7 +191,7 @@ public class FlashcardDAO extends DataAccessObject<Flashcard> {
             preparedStatement.setInt(1, id);
             preparedStatement.setInt(2, id);
             int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't updated");
+            if (affectedRows == 0 ) throw new DAOException("Flashcard wasn't deleted");
 
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);

@@ -32,7 +32,7 @@
                 <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span><h3><%=session.getAttribute("username")%></h3></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span><c:out value="${sessionScope.username}"/></a></li>
                 <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
             </ul>
         </div>

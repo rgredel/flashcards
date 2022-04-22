@@ -14,36 +14,34 @@ import javax.servlet.http.HttpSession;
 public class AuthenticationFilter implements Filter{
 
 	@Override
-	public void destroy() {}
-
-	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-			throws IOException, ServletException {
-
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest)req;
+
 		if(request.getRequestURI().startsWith("/flashcards")||
 				request.getRequestURI().startsWith("/decks")||
-				request.getRequestURI().startsWith("/home")){
+				request.getRequestURI().startsWith("/home")) {
+
 			HttpSession session = request.getSession();
 			if(session.getAttribute("username")==null){
 				request.getRequestDispatcher("/html/index.html").forward(request, res);
 			}
-			
 		}
 
 		if(request.getRequestURI().startsWith("/register")||
 				request.getRequestURI().startsWith("/login")){
+
 			HttpSession session = request.getSession();
 			if(session.getAttribute("username")!=null){
 				request.getRequestDispatcher("/html/home.jsp").forward(request, res);
 			}
 
 		}
-
 		chain.doFilter(request, res);
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {}
+	public void init(FilterConfig arg0){}
 
+	@Override
+	public void destroy(){}
 }
