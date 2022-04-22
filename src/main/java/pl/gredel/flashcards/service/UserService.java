@@ -3,9 +3,11 @@ package pl.gredel.flashcards.service;
 import pl.gredel.flashcards.db.dao.FlashcardDAO;
 import pl.gredel.flashcards.db.dao.UsersDAO;
 import pl.gredel.flashcards.db.dao.util.DAOException;
+import pl.gredel.flashcards.model.Flashcard;
 import pl.gredel.flashcards.model.Users;
 import pl.gredel.flashcards.service.util.ServiceException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +17,7 @@ public class UserService {
 
     UsersDAO usersDAO = new UsersDAO();
 
-    public boolean register(String login, String password, String email) throws ServiceException {
+    public void register(String login, String password, String email) throws ServiceException {
 
         try {
             Optional<Users> userFromDB = usersDAO.findByLogin(login);
@@ -24,13 +26,10 @@ public class UserService {
 
             Users user = new Users(login, password, email);
             usersDAO.create(user);
-            return true;
         } catch (DAOException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             throw new ServiceException("Unexpected error. Please try again.", e);
         }
-
-
     }
 
     public boolean login(String login, String password) throws ServiceException {
@@ -46,5 +45,19 @@ public class UserService {
 
         if (userFromDB.get().getPassword().equals(password)) return true;
         else throw new ServiceException("Incorrect password!");
+    }
+
+    public Users getUserByLogin(String login) throws ServiceException {
+        try {
+            Optional<Users> userFromDB = usersDAO.findByLogin(login);
+            if(userFromDB.isPresent()){
+                return userFromDB.get();
+            }else{
+                throw new ServiceException("User not found!");
+            }
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error.", e);
+        }
     }
 }

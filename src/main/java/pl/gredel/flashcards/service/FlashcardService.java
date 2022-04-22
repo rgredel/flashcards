@@ -1,8 +1,11 @@
 package pl.gredel.flashcards.service;
 
 import pl.gredel.flashcards.db.dao.FlashcardDAO;
+import pl.gredel.flashcards.db.dao.UsersDAO;
 import pl.gredel.flashcards.db.dao.util.DAOException;
+import pl.gredel.flashcards.model.Category;
 import pl.gredel.flashcards.model.Flashcard;
+import pl.gredel.flashcards.model.Users;
 import pl.gredel.flashcards.service.util.ServiceException;
 
 import java.util.List;
@@ -24,4 +27,25 @@ public class FlashcardService {
         }
     }
 
+    public void addFlashcard(String title, String question, String answer, int categoryId, boolean isPublic, String username) throws ServiceException {
+        UserService userService = new UserService();
+        Users user = userService.getUserByLogin(username);
+        Category category = new Category(categoryId);
+        Flashcard flashcard = new Flashcard(title,question,answer,0,isPublic,user,category);
+        try {
+            flashcardDAO.create(flashcard);
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error! Cannot add flashcard.", e);
+        }
+    }
+
+    public void delete(int flashcardId) throws ServiceException {
+        try {
+            flashcardDAO.delete(flashcardId);
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error! Cannot delete flashcard.", e);
+        }
+    }
 }

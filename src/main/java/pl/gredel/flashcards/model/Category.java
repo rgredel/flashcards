@@ -11,6 +11,10 @@ public class Category implements DataTransferObject {
     }
     public Category() {}
 
+    public Category(int categoryId) {
+        this.id = categoryId;
+    }
+
     @Override
     public String toString() {
         return "Category{" +

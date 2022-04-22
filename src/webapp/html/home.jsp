@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +33,7 @@
                 <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> <h3><%=session.getAttribute("username")%></h3></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span> <c:out value='${session.getAttribute("username")}'/></a></li>
                 <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
             </ul>
         </div>
@@ -42,7 +43,7 @@
 
 <footer class="bg-light text-center text-lg-start">
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2022 Copyright: Radoslaw Gredel
+        &copy 2022 Copyright: Radoslaw Gredel
     </div>
 </footer>
 
