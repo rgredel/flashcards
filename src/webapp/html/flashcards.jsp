@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +40,28 @@
     </nav>
 </header>
 <div class="container">
-    <h1>Some Flashcards</h1>
+    <h2>Striped Rows</h2>
+    <p>The .table-striped class adds zebra-stripes to a table:</p>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Category</th>
+        </tr>
+        </thead>
+        <tbody>
+            <c:forEach items="${requestScope.flashcards}" var="flashcard">
+                <tr>
+                    <td><c:out value="${flashcard.title}"/></td>
+                    <td><c:out value="${flashcard.question}"/></td>
+                    <td><c:out value="${flashcard.answer}"/></td>
+                    <td><c:out value="${flashcard.category.name}"/></td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
 </div>
 <footer class="bg-light text-center text-lg-start">
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
