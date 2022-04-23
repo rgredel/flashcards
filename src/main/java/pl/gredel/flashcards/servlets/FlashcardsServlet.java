@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,9 +23,9 @@ public class FlashcardsServlet  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FlashcardService flashcardService = new FlashcardService();
-
+        String username = req.getSession().getAttribute("username").toString();
         try {
-            List<Flashcard> flashcards = flashcardService.getAllFlashcards();
+            List<Flashcard> flashcards = flashcardService.getAllFlashcardsByUsername(username);
             req.setAttribute("flashcards", flashcards);
         } catch (ServiceException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);

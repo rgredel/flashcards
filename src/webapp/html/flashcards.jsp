@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Flashcards</title>
+    <title>My Flashcards</title>
 </head>
     <body>
 
@@ -27,8 +27,8 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Flashcards
                                 <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="flashcards">My Flashcards</a></li>
-                                <li><a href="flashcards">Public Flashcards</a></li>
+                                <li><a href="/flashcards">My Flashcards</a></li>
+                                <li><a href="/flashcards/public">Public Flashcards</a></li>
                             </ul>
                         </li>
                         <li><a href="#">About</a></li>
@@ -45,7 +45,7 @@
             <div class="table-wrapper">
                 <div class="table-title">
                     <div class="row">
-                        <div class="col-sm-8"><h2>All flashcards</h2></div>
+                        <div class="col-sm-8"><h2>My flashcards</h2></div>
                         <div class="col-sm-4">
                             <button type="button" class="btn btn-info add-new" id="addBtn"><i class="fa fa-plus">Add New</i></button>
 
