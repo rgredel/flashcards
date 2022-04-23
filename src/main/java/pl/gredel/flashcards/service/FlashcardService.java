@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class FlashcardService {
     private static final Logger LOGGER = Logger.getLogger( FlashcardService.class.getName() );
-    FlashcardDAO flashcardDAO = new FlashcardDAO();
+    private FlashcardDAO flashcardDAO = new FlashcardDAO();
 
     public List<Flashcard> getAllFlashcards() throws ServiceException {
 

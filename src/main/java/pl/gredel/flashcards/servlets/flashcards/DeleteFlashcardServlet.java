@@ -1,9 +1,8 @@
-package pl.gredel.flashcards.servlets;
+package pl.gredel.flashcards.servlets.flashcards;
 
 import pl.gredel.flashcards.service.FlashcardService;
 import pl.gredel.flashcards.service.util.ServiceException;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

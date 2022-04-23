@@ -1,4 +1,4 @@
-package pl.gredel.flashcards.servlets;
+package pl.gredel.flashcards.servlets.flashcards;
 
 import pl.gredel.flashcards.service.FlashcardService;
 import pl.gredel.flashcards.service.util.ServiceException;

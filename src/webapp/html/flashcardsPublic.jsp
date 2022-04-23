@@ -62,6 +62,42 @@
                 </thead>
                 <tbody>
                     <c:forEach items="${requestScope.publicFlashcards}" var="flashcard">
+                        <script>
+                            $(document).ready(function(){
+                                $("#addToDeckBtn<c:out value="${flashcard.id}"/>").click(function(){
+                                    $("#addToDeckModal<c:out value="${flashcard.id}"/>").modal();
+                                });
+                            });
+                        </script>
+                        <div class="modal fade" id="addToDeckModal<c:out value="${flashcard.id}"/>" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 style="color:dodgerblue;" > Add <c:out value="${flashcard.title}"/> to deck</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form role="form" method="post" action="/flashcards/addToDeck">
+                                            <input hidden name="flashcardId" value="<c:out value="${flashcard.id}"/>"/>
+                                            <input hidden name="redirectPath" value="/flashcards/public"/>
+                                            <div class="form-group">
+                                                <label for="deck">Deck</label>
+                                                <select class="form-control" id="deck" name="deckId">
+                                                    <c:forEach items="${requestScope.decks}" var="deck">
+                                                        <option value="<c:out value="${deck.id}"/>">
+                                                            <c:out value="${deck.name}"/>
+                                                        </option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-lg btn-primary btn-block">Add</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <tr>
                             <td><c:out value="${flashcard.title}"/></td>
                             <td><c:out value="${flashcard.question}"/></td>
@@ -81,7 +117,7 @@
                             <td>
                                 <ul class="list-inline m-0">
                                     <li class="list-inline-item">
-                                        <button class="btn btn-primary btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Add to deck"><i class="fa fa-table"></i></button>
+                                        <button class="btn btn-primary btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Add to deck" id="addToDeckBtn<c:out value="${flashcard.id}"/>"><i class="fa fa-table"></i></button>
                                     </li>
                                 </ul>
                             </td>

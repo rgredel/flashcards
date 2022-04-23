@@ -1,13 +1,10 @@
 package pl.gredel.flashcards.service;
 
-import pl.gredel.flashcards.db.dao.FlashcardDAO;
 import pl.gredel.flashcards.db.dao.UsersDAO;
 import pl.gredel.flashcards.db.dao.util.DAOException;
-import pl.gredel.flashcards.model.Flashcard;
 import pl.gredel.flashcards.model.Users;
 import pl.gredel.flashcards.service.util.ServiceException;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +12,7 @@ import java.util.logging.Logger;
 public class UserService {
     private static final Logger LOGGER = Logger.getLogger( UserService.class.getName() );
 
-    UsersDAO usersDAO = new UsersDAO();
+    private UsersDAO usersDAO = new UsersDAO();
 
     public void register(String login, String password, String email) throws ServiceException {
 
