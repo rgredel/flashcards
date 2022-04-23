@@ -20,6 +20,7 @@ public class DeckDAO  extends DataAccessObject<Deck> {
     private static final String INSERT = "INSERT INTO Deck(name, user_id) VALUES (?, ?)";
     private static final String FIND_BY_ID = "SELECT id, name, user_id FROM Deck WHERE id=?";
     private static final String FIND_ALL = "SELECT id, name, user_id FROM Deck";
+    private static final String FIND_ALL_BY_USER_ID = "SELECT id, name, user_id FROM Deck WHERE user_id=?";
     private static final String UPDATE = "UPDATE Deck SET name =? , user_id =? WHERE id=?";
     private static final String DELETE = "DELETE FROM Deck WHERE id=?";
     private static final String ADD_FLASHCARD_TO_DECK = "INSERT INTO deck_flashcard( deck_id , flashcard_id) VALUES (?, ?)";
@@ -69,6 +70,31 @@ public class DeckDAO  extends DataAccessObject<Deck> {
         } catch (SQLException sqlException) {
             LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
             throw new DAOException("Find all Decks failed.", sqlException);
+        }
+        return decks;
+    }
+
+    public List<Deck> findAllByUserId(int userId) throws DAOException {
+        List<Deck> decks = new ArrayList<>();
+
+        try(Connection connection = ConnectionPool.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_USER_ID)){
+            preparedStatement.setInt(1,userId);
+
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Deck deck = new Deck();
+                    deck.setId(resultSet.getInt(1));
+                    deck.setName(resultSet.getString(2));
+                    UsersDAO usersDAO = new UsersDAO();
+                    Users user = usersDAO.findById(resultSet.getInt(3)).get();
+                    deck.setUser(user);
+                    decks.add(deck);
+                }
+            }
+        } catch (SQLException sqlException) {
+            LOGGER.log(Level.SEVERE, sqlException.toString(), sqlException);
+            throw new DAOException("Find all Decks by User Id failed.", sqlException);
         }
         return decks;
     }
