@@ -60,4 +60,28 @@ public class FlashcardService {
             throw new ServiceException("Unexpected error! Cannot delete flashcard.", e);
         }
     }
+
+    public List<Flashcard> getAllFlashcardsByUsername(String username) throws ServiceException {
+
+        UserService userService = new UserService();
+        Users user = userService.getUserByLogin(username);
+
+        try {
+            List<Flashcard> flashcards = flashcardDAO.findAllByUserId(user.getId());
+            return flashcards;
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error.", e);
+        }
+    }
+
+    public List<Flashcard> getAllPublicFlashcards() throws ServiceException {
+        try {
+            List<Flashcard> flashcards = flashcardDAO.findAllPublic();
+            return flashcards;
+        } catch (DAOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            throw new ServiceException("Unexpected error.", e);
+        }
+    }
 }
